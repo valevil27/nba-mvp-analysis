@@ -64,7 +64,7 @@ def preprocess_league(
 ) -> pd.DataFrame:
     df = df.copy()
     conf = "East" if df.columns[0].lower().startswith("east") else "West"
-    df = df[df["W"].str.isnumeric()]
+    df = df[df["W"].astype(str).str.isnumeric()]
     old_cols = df.columns.tolist()
     old_cols[0] = "Team"
     df.columns = old_cols
@@ -124,7 +124,7 @@ def main():
     data_path = Path("data")
     mvp_path = data_path / "mvp"
     teams_path = data_path / "season"
-    years = (1980, 2026)
+    years = (2016, 2026)
     match args[1]:
         case "all":
             get_mvp_data(mvp_path, years)
