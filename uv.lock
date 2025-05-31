@@ -517,6 +517,21 @@ wheels = [
 ]
 
 [[package]]
+name = "mizani"
+version = "0.13.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "scipy" },
+    { name = "tzdata", marker = "sys_platform == 'emscripten' or sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/63/11/10c4ce1f442e221586f89fb8a7db80568fadb07d2fd4f1c99e902deab4c2/mizani-0.13.5.tar.gz", hash = "sha256:99c3306fc3217d3840dfd3468feadd9a7664935a07ae4f7e8b3889e46b48ac73", size = 765696 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/e7/172f47bc0016f3ea247ad2671ff8d355340f6ae2d0799725a1f3d358daae/mizani-0.13.5-py3-none-any.whl", hash = "sha256:f6024cf3b5780457d7aa56725946857fd9908215efcd5460399d2bc3267ac329", size = 127934 },
+]
+
+[[package]]
 name = "mvp-nba"
 version = "0.1.0"
 source = { virtual = "." }
@@ -526,6 +541,7 @@ dependencies = [
     { name = "lxml" },
     { name = "matplotlib" },
     { name = "pandas" },
+    { name = "plotnine" },
     { name = "requests", extra = ["socks"] },
     { name = "scikit-learn" },
     { name = "seaborn" },
@@ -538,6 +554,7 @@ requires-dist = [
     { name = "lxml", specifier = ">=5.4.0" },
     { name = "matplotlib", specifier = ">=3.10.3" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "plotnine", specifier = ">=0.14.5" },
     { name = "requests", extras = ["socks"], specifier = ">=2.32.3" },
     { name = "scikit-learn", specifier = ">=1.6.1" },
     { name = "seaborn", specifier = ">=0.13.2" },
@@ -714,6 +731,23 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/fe/8b/3c73abc9c759ecd3f1f7ceff6685840859e8070c4d947c93fae71f6a0bf2/platformdirs-4.3.8.tar.gz", hash = "sha256:3d512d96e16bcb959a814c9f348431070822a6496326a4be0911c40b5a74c2bc", size = 21362 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/39/979e8e21520d4e47a0bbe349e2713c0aac6f3d853d0e5b34d76206c439aa/platformdirs-4.3.8-py3-none-any.whl", hash = "sha256:ff7059bb7eb1179e2685604f4aaf157cfd9535242bd23742eadc3c13542139b4", size = 18567 },
+]
+
+[[package]]
+name = "plotnine"
+version = "0.14.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "mizani" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "scipy" },
+    { name = "statsmodels" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5d/0e/618bfa724ad19418c83eb22cdc4332dc69bb67f47094bd013ffe15e188d2/plotnine-0.14.5.tar.gz", hash = "sha256:9e75969e8e10d8d770a4be36d10e075cc10b88ca6fcc99e36ada53436fb5653f", size = 6424617 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/c5/7cfda7ba9fa02243367fbfb4880b6de8039266f22c47c2dbbd39b6adc46f/plotnine-0.14.5-py3-none-any.whl", hash = "sha256:4a8bc4360732dd69a0263def4abab285ed8f0f4386186f1e44c642f2cea79b88", size = 1301197 },
 ]
 
 [[package]]
