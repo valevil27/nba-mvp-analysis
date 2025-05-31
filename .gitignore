@@ -5,7 +5,12 @@ build/
 dist/
 wheels/
 *.egg-info
-data/
 
 # Virtual environments
 .venv
+
+# pruebas
+.pruebas.ipynb
+
+# Data files
+data/
