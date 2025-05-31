@@ -15,8 +15,10 @@ proxies = {
     "https": "socks5h://127.0.0.1:9050",
 }
 
+years_lim = (1980, 2026)
 data_path = Path("data")
-for year in range(1980, 2024):
+
+for year in range(*years_lim):
     filepath = data_path / f"mvp_{year}.csv"
     url = f"https://www.basketball-reference.com/awards/awards_{year}.html"
     response = requests.get(url, headers=headers, proxies=proxies)
