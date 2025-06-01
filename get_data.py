@@ -11,6 +11,7 @@ map_teams = {
     "PHI": "Philadelphia 76ers",
     "SAS": "San Antonio Spurs",
     "BOS": "Boston Celtics",
+    "BKN": "Brooklyn Nets",
     "SEA": "Seattle SuperSonics",
     "ATL": "Atlanta Hawks",
     "HOU": "Houston Rockets",
@@ -58,6 +59,13 @@ proxies = {
     "https": "socks5h://127.0.0.1:9050",
 }
 
+def clean_team_name(s: str) -> str:
+    index = s.find("*")
+    if index == -1: 
+        index = s.find("(") -1
+        if index == -2:
+            return s
+    return s[:index]
 
 def preprocess_league(
     df: pd.DataFrame, mapper=map_teams_short
@@ -68,7 +76,7 @@ def preprocess_league(
     old_cols = df.columns.tolist()
     old_cols[0] = "Team"
     df.columns = old_cols
-    df["Team"] = df["Team"].apply(lambda x: x[:-1] if x.endswith("*") else x)
+    df["Team"] = df["Team"].apply(clean_team_name)
     df["Team"] = df["Team"].map(mapper)
     df["Conference"] = conf
     df["Rank"] = df.index
@@ -124,7 +132,7 @@ def main():
     data_path = Path("data")
     mvp_path = data_path / "mvp"
     teams_path = data_path / "season"
-    years = (2016, 2026)
+    years = (2020, 2026)
     match args[1]:
         case "all":
             get_mvp_data(mvp_path, years)
