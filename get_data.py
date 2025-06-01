@@ -54,22 +54,25 @@ headers = {
     "Accept-Language": "es-ES,es;q=0.9",
 }
 
+# FIXME: Indexes first start at 0, later at 1 -> Ranks are bad
+# FIXME: Previous to some year, when there are 4 divisions, each one is a league
+
 proxies = {
     "http": "socks5h://127.0.0.1:9050",
     "https": "socks5h://127.0.0.1:9050",
 }
 
+
 def clean_team_name(s: str) -> str:
     index = s.find("*")
-    if index == -1: 
-        index = s.find("(") -1
+    if index == -1:
+        index = s.find("(") - 1
         if index == -2:
             return s
     return s[:index]
 
-def preprocess_league(
-    df: pd.DataFrame, mapper=map_teams_short
-) -> pd.DataFrame:
+
+def preprocess_league(df: pd.DataFrame, mapper=map_teams_short) -> pd.DataFrame:
     df = df.copy()
     conf = "East" if df.columns[0].lower().startswith("east") else "West"
     df = df[df["W"].astype(str).str.isnumeric()]
@@ -95,7 +98,9 @@ def get_mvp_data(path: Path, years: tuple[int, int]):
         filepath = path / f"mvp_{year}.csv"
         url = f"https://www.basketball-reference.com/awards/awards_{year}.html"
         response = requests.get(url, headers=headers, proxies=proxies)
-        assert response.status_code == 200, f"Error - { response.status_code = }"
+        assert response.status_code == 200, (
+            f"Error - { response.status_code = }"
+        )
         df = pd.read_html(response.text, header=1)[0].head(10)
         df["Year"] = year
         df.to_csv(filepath, index=False)
@@ -110,7 +115,9 @@ def get_teams(path: Path, years: tuple[int, int]):
         filepath = path / f"season_{year}.csv"
         url = f"https://www.basketball-reference.com/leagues/NBA_{year}.html"
         response = requests.get(url, headers=headers, proxies=proxies)
-        assert response.status_code == 200, f"Error - { response.status_code = }"
+        assert response.status_code == 200, (
+            f"Error - { response.status_code = }"
+        )
         dfs = pd.read_html(StringIO(response.text))[:2]
         df = pd.concat(
             [
@@ -121,14 +128,18 @@ def get_teams(path: Path, years: tuple[int, int]):
         df["Year"] = year
         df.to_csv(filepath, index=False)
         print(f"- Archivo para el año {year}: {filepath}")
-        print(f"\tConferencias: {df["Conference"].unique()}\n")
+        print(f"\tConferencias: {df['Conference'].unique()}\n")
         sleep(random.uniform(3, 7))
+
 
 commands = ["all", "teams", "players"]
 
+
 def main():
     args = sys.argv
-    assert len(args) == 2 and args[1] in commands, f"Expected one argument of: {", ".join(commands)}"
+    assert len(args) == 2 and args[1] in commands, (
+        f"Expected one argument of: {', '.join(commands)}"
+    )
     data_path = Path("data")
     mvp_path = data_path / "mvp"
     teams_path = data_path / "season"
@@ -139,7 +150,7 @@ def main():
         case "players":
             get_mvp_data(mvp_path, years)
         case "teams":
-            get_teams(teams_path,years)
+            get_teams(teams_path, years)
 
 
 if __name__ == "__main__":
