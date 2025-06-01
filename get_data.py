@@ -72,17 +72,25 @@ def clean_team_name(s: str) -> str:
     return s[:index]
 
 
-def preprocess_league(df: pd.DataFrame, mapper=map_teams_short) -> pd.DataFrame:
+def preprocess_season(df: pd.DataFrame, mapper=map_teams_short) -> pd.DataFrame:
     df = df.copy()
     conf = "East" if df.columns[0].lower().startswith("east") else "West"
+    reset_idx = df[~ df["W"].astype(str).str.isnumeric()].index.to_list()
+    rank = 1
+    for i,r in df.iterrows():
+        if i in reset_idx:
+            rank = 1
+            continue
+        df.loc[i, "Rank"] = rank # type: ignore
+        rank += 1
     df = df[df["W"].astype(str).str.isnumeric()]
+    df["Rank"] = df["Rank"].astype(int)
     old_cols = df.columns.tolist()
     old_cols[0] = "Team"
     df.columns = old_cols
     df["Team"] = df["Team"].apply(clean_team_name)
     df["Team"] = df["Team"].map(mapper)
     df["Conference"] = conf
-    df["Rank"] = df.index
     df = df.drop(columns=["W", "L", "GB", "SRS"])
     df = df.rename(columns={"W/L%": "WinRatio", "PS/G": "PPG", "PA/G": "PAG"})
     for c in ["WinRatio", "PPG", "PAG"]:
@@ -107,7 +115,7 @@ def get_mvp_data(path: Path, years: tuple[int, int]):
         sleep(random.uniform(3, 7))
 
 
-def get_teams(path: Path, years: tuple[int, int]):
+def get_seasons(path: Path, years: tuple[int, int]):
     if not path.exists():
         path.mkdir(parents=True)
 
@@ -121,8 +129,8 @@ def get_teams(path: Path, years: tuple[int, int]):
         dfs = pd.read_html(StringIO(response.text))[:2]
         df = pd.concat(
             [
-                preprocess_league(dfs[0]),
-                preprocess_league(dfs[1]),
+                preprocess_season(dfs[0]),
+                preprocess_season(dfs[1]),
             ]
         )
         df["Year"] = year
@@ -132,7 +140,7 @@ def get_teams(path: Path, years: tuple[int, int]):
         sleep(random.uniform(3, 7))
 
 
-commands = ["all", "teams", "players"]
+commands = ["all", "seasons", "mvps"]
 
 
 def main():
@@ -143,14 +151,14 @@ def main():
     data_path = Path("data")
     mvp_path = data_path / "mvp"
     teams_path = data_path / "season"
-    years = (2020, 2026)
+    years = (1980, 2026)
     match args[1]:
         case "all":
             get_mvp_data(mvp_path, years)
-        case "players":
+        case "mvps":
             get_mvp_data(mvp_path, years)
-        case "teams":
-            get_teams(teams_path, years)
+        case "seasons":
+            get_seasons(teams_path, years)
 
 
 if __name__ == "__main__":
