@@ -1,61 +1,19 @@
-from io import StringIO
 import random
 import sys
-import requests
+from io import StringIO
 from pathlib import Path
 from time import sleep
-import pandas as pd
 
-map_teams = {
-    "LAL": "Los Angeles Lakers",
-    "PHI": "Philadelphia 76ers",
-    "SAS": "San Antonio Spurs",
-    "BOS": "Boston Celtics",
-    "BKN": "Brooklyn Nets",
-    "SEA": "Seattle SuperSonics",
-    "ATL": "Atlanta Hawks",
-    "HOU": "Houston Rockets",
-    "MIL": "Milwaukee Bucks",
-    "PHO": "Phoenix Suns",
-    "DEN": "Denver Nuggets",
-    "NJN": "New Jersey Nets",
-    "NYK": "New York Knicks",
-    "DET": "Detroit Pistons",
-    "UTA": "Utah Jazz",
-    "WSB": "Washington Bullets",
-    "CHI": "Chicago Bulls",
-    "POR": "Portland Trail Blazers",
-    "CLE": "Cleveland Cavaliers",
-    "GSW": "Golden State Warriors",
-    "ORL": "Orlando Magic",
-    "MIA": "Miami Heat",
-    "CHH": "Charlotte Hornets",
-    "SAC": "Sacramento Kings",
-    "MIN": "Minnesota Timberwolves",
-    "TOR": "Toronto Raptors",
-    "DAL": "Dallas Mavericks",
-    "IND": "Indiana Pacers",
-    "LAC": "Los Angeles Clippers",
-    "WAS": "Washington Wizards",
-    "NOH": "New Orleans Hornets",
-    "TOT": "Total",
-    "OKC": "Oklahoma City Thunder",
-    "CHA": "Charlotte Bobcats",
-    "NOP": "New Orleans Pelicans",
-    "MEM": "Memphis Grizzlies",
-    "KCK": "Kansas City Kings",
-    "SDC": "San Diego Clippers",
-}
-map_teams_short = {v: k for k, v in map_teams.items()}
+import pandas as pd
+import requests
+
+from map_teams import map_teams_short
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/123.0 Safari/537.36",
     "Referer": "https://www.google.com",
     "Accept-Language": "es-ES,es;q=0.9",
 }
-
-# FIXME: Indexes first start at 0, later at 1 -> Ranks are bad
-# FIXME: Previous to some year, when there are 4 divisions, each one is a league
 
 proxies = {
     "http": "socks5h://127.0.0.1:9050",
@@ -75,13 +33,13 @@ def clean_team_name(s: str) -> str:
 def preprocess_season(df: pd.DataFrame, mapper=map_teams_short) -> pd.DataFrame:
     df = df.copy()
     conf = "East" if df.columns[0].lower().startswith("east") else "West"
-    reset_idx = df[~ df["W"].astype(str).str.isnumeric()].index.to_list()
+    reset_idx = df[~df["W"].astype(str).str.isnumeric()].index.to_list()
     rank = 1
-    for i,r in df.iterrows():
+    for i, r in df.iterrows():
         if i in reset_idx:
             rank = 1
             continue
-        df.loc[i, "Rank"] = rank # type: ignore
+        df.loc[i, "Rank"] = rank  # type: ignore
         rank += 1
     df = df[df["W"].astype(str).str.isnumeric()]
     df["Rank"] = df["Rank"].astype(int)
